@@ -1,0 +1,63 @@
+﻿using System.IO;
+using System.Linq;
+using DocumentArchiver.Services;
+
+namespace DocumentArchiver.Pages
+{
+    public class ContentsPage : BasePage
+    {
+        private FileInfo[] filesInSection;
+
+        public void WriteHTML(FileInfo[] filesInSection)
+        {
+            this.filesInSection = filesInSection;
+
+            StreamWriter streamWriter = new StreamWriter(fs);//, Encoding.Unicode
+            streamWriter.WriteLine("<html>");
+            streamWriter.WriteLine("  <head>");
+            streamWriter.WriteLine("     <title>" + DocumentSettings.DocumentName + "</title>");
+            streamWriter.WriteLine("     <link href='msdn.css' type='text/css' rel='stylesheet' />");
+            streamWriter.WriteLine("  </head>");
+            streamWriter.WriteLine("  <body id='bodyID' class='dtBODY' topmargin='0' leftmargin='0' bottommargin='0' rightmargin='0' marginwidth='0' marginheight='0'>");
+            streamWriter.WriteLine("     <div id='nsbanner'>");
+            streamWriter.WriteLine("        <div id='bannerrow1'>");
+            streamWriter.WriteLine("           <table class='bannerparthead' cellspacing=0>");
+            streamWriter.WriteLine("              <tr id='hdr'>");
+            streamWriter.WriteLine("                 <td class='runninghead' nowrap>" + DocumentSettings.DocumentName + " Documentation</td>");
+            streamWriter.WriteLine("                 <td class='product' nowrap>&nbsp;</td>");
+            streamWriter.WriteLine("              </tr>");
+            streamWriter.WriteLine("           </table>");
+            streamWriter.WriteLine("        </div>");
+            streamWriter.WriteLine("        <div id='TitleRow'>");
+            streamWriter.WriteLine("           <h1 class='dtH1'>Overview</h1>");
+            streamWriter.WriteLine("        </div>");
+            streamWriter.WriteLine("     </div>");
+
+            streamWriter.WriteLine("    <div style='font-family: verdana; font-size: 8pt; cursor: pointer; margin: 6 4 8 2; text-align: right' onmouseover='this.style.textDecoration='underline;'' onmouseout='this.style.textDecoration='none;'' onclick='syncTree(window.parent.frames[1].document.URL)'>sync toc</div>");
+            streamWriter.WriteLine("    <div id='tree' style='top: 35px; left: 0px;' class='treeDiv'>");
+            streamWriter.WriteLine("      <div id='treeRoot' onselectstart='return false' ondragstart='return false'>");
+            streamWriter.WriteLine("        <div class='treeNode'>");
+            streamWriter.WriteLine("          <img src='treenodeplus.gif' class='treeLinkImage' onclick='expandCollapse(this.parentNode)'>");
+            streamWriter.WriteLine("          <a href='" + DefaultPage.Replace(" ", "") + "' target='main' class='treeUnselected' onclick='clickAnchor(this)'>" + DocumentName + "</a>");
+            streamWriter.WriteLine("          <div class='treeSubnodesHidden'>");
+
+            foreach (var item in filesInSection.ToList())
+            {
+                string prefix = item.Name.Substring(0, 1);
+                string pageName = item.Name.ToString().Remove(int.Parse((item.Name.Length - 4).ToString()), 4);
+                streamWriter.WriteLine("            <div class='treeNode'>");
+                streamWriter.WriteLine("              <img src='treenodeplus.gif' class='treeLinkImage' onclick='expandCollapse(this.parentNode)'>");
+                streamWriter.WriteLine("              <a href='" + GetFileName(DocumentSettings.DocumentName, pageName, prefix) + "' target='main' class='treeUnselected' onclick='clickAnchor(this)'>" + item.Name.ToString() + "</a>");
+                streamWriter.WriteLine("                <div class='treeSubnodesHidden'>");
+                streamWriter.WriteLine("&nbsp;&nbsp;<li>" + item.Name.ToString() + "</li>");
+                streamWriter.WriteLine("              </div>");
+                streamWriter.WriteLine("            </div>");
+            }
+            streamWriter.WriteLine("          </div>");
+            streamWriter.WriteLine("        </div>");
+            streamWriter.WriteLine("      </div>");
+            streamWriter.WriteLine("    </div></body></html>");
+            streamWriter.Close();
+        }
+    }
+}

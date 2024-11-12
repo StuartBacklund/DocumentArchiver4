@@ -1,0 +1,49 @@
+﻿using System.IO;
+using DocumentArchiver.Services;
+
+namespace DocumentArchiver.Pages
+{
+    public class IndexPage : BasePage
+    {
+        private DocumentSettings documentSettings;
+
+        private string ContentsPage()
+        {
+            return string.Concat(documentSettings.DocumentName, ".Contents.htm").Replace(" ", "");
+        }
+
+        private string DefaultPage()
+        {
+            return string.Concat(documentSettings.DocumentName, ".Default.htm").Replace(" ", "");
+        }
+
+        public void WriteHTML(DocumentSettings _documentSettings)
+        {
+            documentSettings = _documentSettings;
+
+            StreamWriter streamWriter = new StreamWriter(fs);
+            streamWriter.WriteLine("<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Frameset//EN'>");
+            streamWriter.WriteLine("<html>");
+            streamWriter.WriteLine("  <head>");
+            streamWriter.WriteLine("     <meta name='Robots' content='noindex'>");
+            streamWriter.WriteLine("     <title>" + documentSettings.DocumentName + "</title>");
+            streamWriter.WriteLine("     <script language='JavaScript'>");
+            streamWriter.WriteLine("     // ensure this page is not loaded inside another frame");
+            streamWriter.WriteLine("     if (top.location != self.location)");
+            streamWriter.WriteLine("     {");
+            streamWriter.WriteLine("     	top.location = self.location;");
+            streamWriter.WriteLine("     }");
+            streamWriter.WriteLine("     </script>");
+            streamWriter.WriteLine("  </head>");
+            streamWriter.WriteLine("	<frameset cols='250,*' framespacing='6' bordercolor='#6699CC'>");
+            streamWriter.WriteLine("		<frame name='contents' src='" + ContentsPage() + "' frameborder='0' scrolling='no'>");
+            streamWriter.WriteLine("		<frame name='main' src='" + DefaultPage() + "' frameborder='1'>");
+            streamWriter.WriteLine("		<noframes>");
+            streamWriter.WriteLine("			<p>This page requires frames, but your browser does not support them.</p>");
+            streamWriter.WriteLine("		</noframes>");
+            streamWriter.WriteLine("	</frameset>");
+            streamWriter.WriteLine("</html>");
+            streamWriter.Close();
+        }
+    }
+}

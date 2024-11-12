@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DocumentArchiver.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DefaultOutputName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Articles</Value>
+    </Setting>
+    <Setting Name="DefaultAccent" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Blue</Value>
+    </Setting>
+    <Setting Name="ArticleLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Articles</Value>
+    </Setting>
+    <Setting Name="DefaultFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">c:\Articles\Articles</Value>
+    </Setting>
+    <Setting Name="DefaultTheme" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">BaseDark</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

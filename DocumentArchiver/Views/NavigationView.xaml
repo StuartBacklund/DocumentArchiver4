@@ -1,0 +1,58 @@
+﻿<UserControl
+    x:Class="DocumentArchiver.Views.NavigationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:commands="clr-namespace:DocumentArchiver.Commands"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DocumentArchiver.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Center"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    DataContext="{Binding NavigationView, Source={StaticResource Locator}}"
+    mc:Ignorable="d">
+    <Grid>
+        <Border Height="50">
+            <DockPanel
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                LastChildFill="False">
+                <DockPanel.Resources>
+                    <Style BasedOn="{StaticResource MetroButtonStyle}" TargetType="{x:Type Button}">
+                        <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                        <Setter Property="DockPanel.Dock" Value="Right" />
+                    </Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                        <Setter Property="DockPanel.Dock" Value="Right" />
+                    </Style>
+                </DockPanel.Resources>
+
+                <Label
+                    Height="30"
+                    Margin="5"
+                    Content="DOCUMENT NAME" />
+                <TextBox
+                    x:Name="nameTextBox"
+                    Width="200"
+                    Height="30"
+                    Margin="5"
+                    SourceUpdated="OnSourceUpdated"
+                    Text="{Binding NavDocumentName, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                <Label
+                    Height="30"
+                    Margin="5"
+                    Content="BUILD" />
+                <Button
+                    Width="40"
+                    Height="40"
+                    Margin="5"
+                    Command="{Binding CompileCommand}"
+                    Content="{StaticResource RefreshFigure}"
+                    IsEnabled="{Binding IsNotBusy, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="BUILD" />
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>

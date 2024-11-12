@@ -1,0 +1,15 @@
+﻿using System.Windows.Controls;
+
+namespace DocumentArchiver.Views
+{
+    /// <summary>
+    /// Interaction logic for PropertyGridView.xaml
+    /// </summary>
+    public partial class PropertyGridView : UserControl
+    {
+        public PropertyGridView()
+        {
+            InitializeComponent();
+        }
+    }
+}

@@ -1,0 +1,443 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using DocumentArchiver.Pages;
+
+namespace DocumentArchiver.Services
+{
+    public class ArticleCompiler
+    {
+        private StreamWriter sw;
+        private XmlTextWriter toc;
+        private DocumentSettings documentSetting;
+        private DirectoryInfo workingDirectory { get; set; }
+        public string ReturnMessage { get; set; }
+        private char[] alphabetList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        private FileInfo[] files;
+
+        public char[] AlphabetList
+        {
+            get { return alphabetList; }
+        }
+
+        public FileInfo[] Files
+        {
+            get { return files; }
+            set { files = value; }
+        }
+
+        private string DefaultTopic
+        {
+            get
+            {
+                return string.Concat(documentSetting.DocumentName, ".Default.htm").Replace(" ", "");
+            }
+        }
+
+        public bool IncludeFavorites { get; set; }
+
+        public string ProjectName
+        {
+            get
+            {
+                return documentSetting.DocumentName.Replace(" ", "");
+            }
+        }
+
+        public string DirectoryName
+        {
+            get
+            {
+                return documentSetting.InputFolder;
+            }
+        }
+
+        public string HtmlHelpCompiler
+        {
+            get { return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + @"\Html Help Workshop\hhc.exe"; }
+        }
+
+        public ArticleCompiler(DocumentSettings documentSetting)
+        {
+            this.documentSetting = documentSetting;
+        }
+
+        public void Setup()
+        {
+            var path = new DirectoryInfo(documentSetting.InputFolder);
+            files = path.GetFiles().Where(x => x.Extension == ".htm").OrderBy(n => n.Name).ToArray();
+
+            this.OpenProjectFile();
+            this.OpenContentsFile();
+            this.OpenBookInContents();
+
+            this.CreateHomePage();
+            this.CreateIndexPage();
+            this.CreateContentsPage();
+
+            foreach (var letter in alphabetList.ToList())
+            {
+                var filegroup = new List<FileInfo>();
+                foreach (var file in files.ToArray())
+                {
+                    if (file.Name.StartsWith(letter.ToString()))
+                    {
+                        filegroup.Add(file);
+                    }
+                }
+                CreateHTMPage(letter.ToString(), filegroup.ToArray());
+                CreateHTMPageDetails(letter.ToString(), filegroup.ToArray());
+            }
+
+            this.CloseProjectFile();
+            this.CloseBookInContents();
+            this.CloseContentsFile();
+            this.WriteEmptyIndexFile();
+        }
+
+        public string ProjectFilename
+        {
+            get
+            {
+                return documentSetting.ProjectName + ".hhp";
+            }
+        }
+
+        public string ContentsFilename
+        {
+            get
+            {
+                return documentSetting.ProjectName + ".hhc";
+            }
+        }
+
+        public string IndexFilename
+        {
+            get
+            {
+                return documentSetting.ProjectName + ".hhk";
+            }
+        }
+
+        public string LogFilename
+        {
+            get
+            {
+                return documentSetting.ProjectName + ".log";
+            }
+        }
+
+        public string CompiledHtmlFilename
+        {
+            get
+            {
+                return documentSetting.ProjectName + ".chm";
+            }
+        }
+
+        public string PathToProjectFile()
+        {
+            return Path.Combine(documentSetting.InputFolder, ProjectFilename);
+        }
+
+        public string PathToContentsFile()
+        {
+            return Path.Combine(documentSetting.InputFolder, ContentsFilename);
+        }
+
+        public string PathToIndexFile()
+        {
+            return Path.Combine(documentSetting.InputFolder, IndexFilename);
+        }
+
+        public string PathToLogFile()
+        {
+            return Path.Combine(documentSetting.InputFolder, LogFilename);
+        }
+
+        public string PathToCompiledHtmlFile()
+        {
+            return Path.Combine(documentSetting.InputFolder, CompiledHtmlFilename);
+        }
+
+        private string WorkingDirectory()
+        {
+            return Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+        }
+
+        public void OpenProjectFile()
+        {
+            sw = new StreamWriter(File.Open(PathToProjectFile(), FileMode.Create));
+
+            string options;
+
+            if (IncludeFavorites)
+            {
+                options = @"0x63520,220,0x383e,[86,51,872,558],,,,,,,0";
+            }
+            else
+            {
+                options = @"0x62520,220,0x383e,[86,51,872,558],,,,,,,0";
+            }
+
+            sw.WriteLine("[OPTIONS]");
+            sw.WriteLine("Auto Index=Yes");
+            sw.WriteLine("Title=" + documentSetting.DocumentName);
+            sw.WriteLine("Compatibility=1.1 or later");
+            sw.WriteLine("Compiled file=" + CompiledHtmlFilename);
+            sw.WriteLine("Contents file=" + ContentsFilename);
+            sw.WriteLine("Default Window=MsdnHelp");
+            sw.WriteLine("Default topic=" + Path.GetFileName(DefaultTopic));
+            sw.WriteLine("Display compile progress=No");
+            sw.WriteLine("Error log file=" + this.LogFilename);
+            sw.WriteLine("Full-text search=Yes");
+            sw.WriteLine("Index file=" + IndexFilename);
+            sw.WriteLine("Language=0x409 English (United States)");
+            sw.WriteLine("");
+            sw.WriteLine("[WINDOWS]");
+            string outString1 = @"MsdnHelp=".PadRight(0) + '"';
+            string outString2 = string.Concat(outString1, documentSetting.ProjectName, " Help".PadRight(0) + '"', ",", '"', ContentsFilename, '"', ",", '"', IndexFilename, '"', ",,,,,,,", options);
+            sw.WriteLine(outString2);
+            sw.WriteLine("");
+            sw.WriteLine("[FILES]");
+        }
+
+        public void AddFileToProject(string filename)
+        {
+            sw.WriteLine(filename);
+        }
+
+        public void CloseProjectFile()
+        {
+            sw.WriteLine("");
+            sw.WriteLine("[INFOTYPES]");
+            sw.Close();
+        }
+
+        public void OpenContentsFile()
+        {
+            toc = new XmlTextWriter(PathToContentsFile(), null);
+
+            toc.WriteComment("This document contains Table of Contents information for the HtmlHelp compiler.");
+            toc.WriteStartElement("UL");
+        }
+
+        public void OpenBookInContents()
+        {
+            toc.WriteStartElement("UL");
+        }
+
+        public void AddFileToContents(string headingName, string htmlFilename, int? ImageNumber = null)
+        {
+            toc.WriteStartElement("LI");
+            toc.WriteStartElement("OBJECT");
+            toc.WriteAttributeString("type", "text/sitemap");
+            toc.WriteStartElement("param");
+            toc.WriteAttributeString("name", "Name");
+            toc.WriteAttributeString("value", headingName.Replace("$", "."));
+            toc.WriteEndElement();
+            toc.WriteStartElement("param");
+            toc.WriteAttributeString("name", "Local");
+            toc.WriteAttributeString("value", Path.GetFileName(htmlFilename));
+            toc.WriteEndElement();
+
+            if (ImageNumber.HasValue)
+            {
+                toc.WriteStartElement("param");
+                toc.WriteAttributeString("name", "ImageNumber");
+                toc.WriteAttributeString("value", ImageNumber.Value.ToString());
+                toc.WriteEndElement();
+            }
+
+            toc.WriteEndElement();
+            toc.WriteEndElement();
+        }
+
+        public void CloseBookInContents()
+        {
+            toc.WriteEndElement();
+        }
+
+        public void CloseContentsFile()
+        {
+            toc.WriteEndElement();
+            toc.Close();
+        }
+
+        public void WriteEmptyIndexFile()
+        {
+            XmlTextWriter i = new XmlTextWriter(PathToIndexFile(), null);
+
+            i.WriteStartElement("HTML");
+            i.WriteStartElement("BODY");
+            i.WriteComment("");
+            i.WriteEndElement();
+            i.WriteEndElement();
+            i.Close();
+        }
+
+        public int CompileProject()
+        {
+            string chmPath = PathToCompiledHtmlFile();
+            if (File.Exists(chmPath))
+            {
+                File.Delete(chmPath);
+            }
+            Process helpCompileProcess = new Process();
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.FileName = HtmlHelpCompiler;
+            processStartInfo.Arguments = string.Concat('"', Path.GetFullPath(PathToProjectFile()), '"');
+            processStartInfo.ErrorDialog = false;
+            processStartInfo.WorkingDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            helpCompileProcess.StartInfo = processStartInfo;
+            helpCompileProcess.Start();
+            helpCompileProcess.WaitForExit();
+
+            string msg = string.Format("The HTML Help compiler '{0}' was not found.", HtmlHelpCompiler);
+            helpCompileProcess.Close();
+            var postDirInfo = new DirectoryInfo(documentSetting.InputFolder);
+            foreach (FileInfo oFile in postDirInfo.GetFiles())
+            {
+                string strValue = oFile.Name.ToUpper();
+
+                if (strValue.Contains(documentSetting.DocumentName.Replace(" ", "").ToUpper()) & oFile.Extension == ".htm")
+                {
+                    if (File.Exists(oFile.FullName))
+                    {
+                        File.Delete(oFile.FullName);
+                    }
+                }
+            }
+            return 1;
+        }
+
+        public bool CopyFile(string source, string target)
+        {
+            try
+            {
+                if (File.Exists(target))
+                {
+                    File.Delete(target);
+                }
+                File.Copy(source, target, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public void CreateHTMPage(string sectionName, Array htPage)
+        {
+            CreateArticleSectionsPage hp = new CreateArticleSectionsPage();
+            string selectedPath = documentSetting.InputFolder;
+            string filepath = documentSetting.InputFolder;
+            string fileName = (documentSetting.DocumentName + "." + sectionName + ".htm").Replace(" ", "");
+            string fullPath = Path.Combine(filepath, fileName);
+            hp.FileName = fileName;
+            hp.FilePath = filepath;
+            hp.OpenFile();
+            hp.WriteHTML(documentSetting, sectionName, htPage);
+            hp.CloseFile();
+            this.AddFileToProject(fullPath);
+            this.AddFileToContents(sectionName, fullPath);
+        }
+
+        public void CreateHTMPageDetails(string sectionName, Array ctPage)
+        {
+            foreach (FileInfo file in ctPage)
+            {
+                CreateArticlePageDetails hp = new CreateArticlePageDetails();
+                string selectedPath = documentSetting.InputFolder;
+                string filepath = documentSetting.InputFolder;
+                string objName = file.Name.Replace(".htm", "");
+                string fileName = (documentSetting.DocumentName + "." + sectionName + "." + objName + ".htm").Replace(" ", "");
+                string fullPath = Path.Combine(filepath, fileName);
+                hp.FileName = fileName;
+                hp.FilePath = filepath;
+                hp.OpenFile();
+                hp.WriteHTML(documentSetting, file.Name, fullPath);
+                hp.CloseFile();
+                this.AddFileToProject(fullPath);
+                this.OpenBookInContents();
+                this.AddFileToContents(objName, fileName, 11);
+                this.CloseBookInContents();
+            }
+        }
+
+        public void CreatePageSectionDetails(string character, List<FileInfo> filegroup)
+        {
+            CreateArticleSectionsPage hp = new CreateArticleSectionsPage();
+            foreach (var ch in alphabetList.ToList())
+            {
+                foreach (FileInfo file in filegroup.ToList())
+                {
+                    if (file.Name.Substring(0, 1) == ch.ToString())
+                    {
+                        var extractedFiles = filegroup.Where(x => x.Name.Substring(0, 1) == character);
+                        hp.FilesInSection = extractedFiles.ToList<FileInfo>();
+                        hp.ProjectDocumentSettings = documentSetting;
+
+                        string fileName = string.Concat(documentSetting.DocumentName, ".", character, ".", file.Name).Replace(" ", "");
+                        string fullPath = Path.Combine(documentSetting.InputFolder, fileName);
+                        hp.FileName = fileName;
+                        hp.FilePath = documentSetting.InputFolder;
+                        hp.OpenFile();
+                        hp.WriteHTML(documentSetting, character, extractedFiles.ToArray());
+                        hp.CloseFile();
+                        this.AddFileToProject(fullPath);
+                        this.AddFileToContents(character.ToUpper(), fullPath);
+                    }
+                }
+            }
+        }
+
+        public void CreateContentsPage()
+        {
+            ContentsPage hp = new ContentsPage();
+            hp.ProjectDocumentSettings = documentSetting;
+            hp.FilesInSection = files.ToList<FileInfo>();
+            string fileName = string.Concat(documentSetting.DocumentName, ".Contents.htm").Replace(" ", "");
+            string fullPath = Path.Combine(documentSetting.InputFolder, fileName);
+            hp.FileName = fileName;
+            hp.FilePath = documentSetting.InputFolder;
+            hp.OpenFile();
+            hp.WriteHTML(documentSetting, files);
+            hp.CloseFile();
+        }
+
+        public void CreateIndexPage()
+        {
+            IndexPage hp = new IndexPage();
+            hp.ProjectDocumentSettings = documentSetting;
+            string fileName = string.Concat(documentSetting.DocumentName, ".Index.htm").Replace(" ", "");
+            string fullPath = Path.Combine(documentSetting.InputFolder, fileName);
+            hp.FileName = fileName;
+            hp.FilePath = documentSetting.InputFolder;
+            hp.OpenFile();
+            hp.WriteHTML(documentSetting);
+            hp.CloseFile();
+        }
+
+        public void CreateHomePage()
+        {
+            HomePage hp = new HomePage();
+            hp.ProjectDocumentSettings = documentSetting;
+            string fileName = string.Concat(documentSetting.DocumentName, ".Default.htm").Replace(" ", "");
+            string fullPath = Path.Combine(documentSetting.InputFolder, fileName);
+            hp.FileName = fileName;
+            hp.FilePath = documentSetting.InputFolder;
+            hp.OpenFile();
+
+            hp.WriteHTML(documentSetting);
+            hp.CloseFile();
+            this.AddFileToProject(fullPath);
+            this.AddFileToContents(documentSetting.DocumentName, fullPath);
+        }
+    }
+}

@@ -1,0 +1,32 @@
+﻿<UserControl
+     x:Class="DocumentArchiver.Views.FileFolderView"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+     xmlns:local="clr-namespace:DocumentArchiver.Views"
+     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     d:DesignHeight="300"
+     d:DesignWidth="300"
+     DataContext="{Binding FileFolderView,                                             Source={StaticResource Locator}}"
+     mc:Ignorable="d">
+    <GroupBox x:Name="FilesGroupBox"
+                          Height="Auto"
+                          Width="Auto"
+                         MinWidth="300" Header="FILES">
+        <ListView
+          x:Name="FilesListView"
+          MinWidth="200"
+        Width="Auto"
+          ItemsSource="{Binding Files, Mode=OneWay,NotifyOnSourceUpdated=True}">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Width="500"
+                              DisplayMemberBinding="{Binding Name}"
+                              Header="Filename" />
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </GroupBox>
+</UserControl>

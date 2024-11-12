@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using DocumentArchiver.Services;
+using DocumentArchiver.Helpers;
+
+namespace DocumentArchiver.Pages
+{
+    public abstract class BasePage
+    {
+        protected FileStream fs;
+        private static string FileExtensionString = ".htm";
+        public string DocumentName { get; set; }
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
+        public string InputFolderPath { get; set; }
+        public string pageSection { get; set; }
+        public string pathName { get; set; }
+        public List<FileInfo> FilesInSection { get; set; }
+        public DocumentSettings ProjectDocumentSettings { get; set; }
+
+        public virtual void WriteHTML()
+        {
+        }
+
+        public void OpenFile()
+        {
+            string path = System.IO.Path.Combine(FilePath, FileName);
+            fs = new FileStream(path, FileMode.OpenOrCreate);
+        }
+
+        public void CloseFile()
+        {
+            fs.Close();
+        }
+
+        public string GetFileName(string fileName)
+        {
+            return string.Concat(ProjectDocumentSettings.DocumentName, ".", fileName, FileExtensionString).Replace(" ", "");
+        }
+
+        public string GetFileName(string documentname, string fileName, string fileprefix)
+        {
+            return string.Concat(documentname, ".", fileprefix, ".", fileName).Replace(" ", "");
+        }
+
+        public string GetPagesFileName(string fileName, string fileprefix)
+        {
+            return string.Concat(ProjectDocumentSettings.DocumentName, ".", fileprefix, ".", fileName, FileExtensionString).Replace(" ", "");
+        }
+    }
+}

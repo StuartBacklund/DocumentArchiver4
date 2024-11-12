@@ -1,0 +1,223 @@
+﻿using System;
+using System.ComponentModel;
+using System.IO;
+using DocumentArchiver.Helpers;
+
+namespace DocumentArchiver.Services
+{
+    public class DocumentSettings : IDataErrorInfo, INotifyPropertyChanged, IDocumentSettings
+    {
+        private string projectName;
+
+        public string ProjectName
+        {
+            get { return projectName; }
+            set
+            {
+                projectName = value;
+                RaisePropertyChanged("ProjectName");
+            }
+        }
+
+        private string pageName;
+
+        public string PageName
+        {
+            get { return pageName; }
+            set
+            {
+                pageName = value;
+                RaisePropertyChanged("PageName");
+            }
+        }
+
+        private string outputFolder;
+
+        public string OutputFolder
+        {
+            get { return outputFolder; }
+            set
+            {
+                outputFolder = value;
+                RaisePropertyChanged("OutputFolder");
+            }
+        }
+
+        private string modifiedDate;
+
+        public string ModifiedDate
+        {
+            get { return modifiedDate; }
+            set
+            {
+                modifiedDate = value;
+                RaisePropertyChanged("ModifiedDate");
+            }
+        }
+
+        private string numberOfArticles;
+
+        public string NumberOfArticles
+        {
+            get { return numberOfArticles; }
+            set
+            {
+                numberOfArticles = value;
+                RaisePropertyChanged("NumberOfArticles");
+            }
+        }
+
+        private string inputFolder;
+
+        public string InputFolder
+        {
+            get { return inputFolder; }
+            set
+            {
+                inputFolder = value;
+                RaisePropertyChanged("InputFolder");
+            }
+        }
+
+        private string documentName;
+
+        public string DocumentName
+        {
+            get { return documentName; }
+            set
+            {
+                documentName = value;
+                this.projectName = StringExtensionMethods.GetMonthNameAndYear();
+                RaisePropertyChanged("DocumentName");
+                RaisePropertyChanged("ProjectName");
+            }
+        }
+
+        public string CssStyleSheet
+        {
+            get { return FileExits("msdn.css") ? GetFilePath("msdn.css") : string.Empty; }
+        }
+
+        public string TableImage
+        {
+            get { return FileExits("Table.gif") ? GetFilePath("Table.gif") : string.Empty; }
+        }
+
+        public string ProcedureImage
+        {
+            get { return FileExits("Procedure.gif") ? GetFilePath("Procedure.gif") : string.Empty; }
+        }
+
+        public string ColumnImage
+        {
+            get { return FileExits("Column.gif") ? GetFilePath("Column.gif") : string.Empty; }
+        }
+
+        public string TreeViewStyleSheet
+        {
+            get { return FileExits("tree.css") ? GetFilePath("tree.css") : string.Empty; }
+        }
+
+        public string TreeViewJavascript
+        {
+            get { return FileExits("tree.js") ? GetFilePath("tree.js") : string.Empty; }
+        }
+
+        public string TreeNodeDotImage
+        {
+            get { return FileExits("treenodedot.gif") ? GetFilePath("treenodedot.gif") : string.Empty; }
+        }
+
+        public string TreeNodeOpenImage
+        {
+            get { return FileExits("treenodeminus.gif") ? GetFilePath("treenodeminus.gif") : string.Empty; }
+        }
+
+        public string TreeNodeClosedImage
+        {
+            get { return FileExits("treenodeplus.gif") ? GetFilePath("treenodeplus.gif") : string.Empty; }
+        }
+
+        public DirectoryInfo WorkingDirectory { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public DocumentSettings()
+        {
+        }
+
+        public void Run(string projectName,
+                                string pageName,
+                                string outputFolder,
+                                string modifiedDate,
+                                string numberOfArticles,
+                                string inputFolder,
+                                string documentName)
+        {
+            this.projectName = projectName;
+            this.pageName = pageName;
+            this.outputFolder = outputFolder;
+            this.modifiedDate = modifiedDate;
+            this.numberOfArticles = numberOfArticles;
+            this.inputFolder = inputFolder;
+            this.documentName = documentName;
+        }
+
+        public string Error
+        {
+            get
+            {
+                return "This property is not used by WPF.";
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                string error = string.Empty;
+
+                switch (columnName)
+                {
+                    case "DocumentName":
+                        if (string.IsNullOrEmpty(DocumentName))
+                            error = "Document Name is required";
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return error;
+            }
+        }
+
+        private string DataDirectory
+        {
+            get
+            {
+                return Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "FILES");
+            }
+        }
+
+        public bool FileExits(string file)
+        {
+            return (File.Exists(Path.Combine(DataDirectory, file)));
+        }
+
+        public string GetFilePath(string file)
+        {
+            return Path.Combine(DataDirectory, file);
+        }
+    }
+}

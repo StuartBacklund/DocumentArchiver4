@@ -1,0 +1,84 @@
+﻿<UserControl
+     x:Class="DocumentArchiver.Views.PropertyGridView"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+     xmlns:local="clr-namespace:DocumentArchiver.Views"
+     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     d:DesignHeight="300"
+     d:DesignWidth="300"
+     DataContext="{Binding PropertyGridView,                                             Source={StaticResource Locator}}"
+     mc:Ignorable="d">
+    <GroupBox
+          x:Name="SettingsGroupBox"
+          MinWidth="300"
+          Width="Auto"
+          Height="Auto"
+          Header="SETTINGS">
+        <UniformGrid
+               VerticalAlignment="Top"
+               Columns="2"
+               DataContext="{Binding DocumentSettings,UpdateSourceTrigger=PropertyChanged}">
+            <Label
+                    Width="150"
+                    Height="30"
+                    Content="PROJECT NAME">
+            </Label>
+            <TextBlock
+                    x:Name="txtProjname"
+                    Width="150"
+                    Height="30"
+                    Text="{Binding ProjectName}" />
+            <Label
+                    Width="150"
+                    Height="30"
+                    Content="DOCUMENT NAME">
+            </Label>
+            <TextBlock
+                    x:Name="txtDocName"
+                    Width="150"
+                    Height="30"
+                    Text="{Binding DocumentName}" />
+            <Label
+                    Width="150"
+                    Height="30"
+                    Content="WORKING FOLDER">
+            </Label>
+            <TextBlock
+                    x:Name="txtWorkingFolder"
+                  Width="150"
+                    Height="30"
+                    Text="{Binding InputFolder}" />
+            <Label
+                    Width="150"
+                    Height="30"
+                    Content="OUTPUT PATH">
+            </Label>
+            <TextBlock
+                    x:Name="txtOutputPath"
+                   Width="150"
+                    Height="30"
+                    Text="{Binding OutputFolder}" />
+            <Label
+                    Width="150"
+                    Height="30"
+                    Content="ITEM COUNT">
+            </Label>
+            <TextBlock
+                    x:Name="txtCount"
+                   Width="150"
+                    Height="30"
+                    Text="{Binding NumberOfArticles}" />
+            <Label
+                    Width="150"
+                    Height="30"
+                    Content="DATE MODIFIED">
+            </Label>
+            <TextBlock
+                    x:Name="txtDate"
+                    Width="150"
+                    Height="30"
+                    Text="{Binding ModifiedDate}" />
+        </UniformGrid>
+    </GroupBox>
+</UserControl>

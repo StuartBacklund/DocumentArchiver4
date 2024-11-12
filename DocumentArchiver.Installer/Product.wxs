@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Name="Article Compiler" Id="2B4BD1B0-4A83-4714-84E4-2DAA4F7B2264" UpgradeCode="E391FB26-6B00-44A9-901A-85BFD89697CD" Language="1033" Codepage="1252" Version="1.0.0.0" Manufacturer="Stuart Backlund">
+        <Package Id="*" Keywords="Installer" Description="Article Compiler" Comments="5th Version" Manufacturer="Stuart Backlund" InstallerVersion="200" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
+        <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+        <?define BaseDirectory=$(sys.SOURCEFILEDIR)..\?>
+        <?define BinarySourceDirectory = "..\Deploy\"?>
+        <Directory Id="TARGETDIR" Name="SourceDir" FileSource=".\">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLLOCATION" Name="Article Compiler" FileSource="..\Deploy\Release\DocumentArchiver.exe">
+                    <Component Id="MainExecutable" Guid="77a854b8-7d54-404b-8c7f-4beb88b7a983">
+                        <File Id="DOCUMENTARCHIVER.EXE" Name="DocumentArchiver.exe" Source="..\Deploy\Release\DocumentArchiver.exe">
+                            <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="Article Compiler" WorkingDirectory="INSTALLDIR" Advertise="yes" Icon="DesktopIcon.exe" IconIndex="0" />
+                            <Shortcut Id="ExeShortcut" Directory="ProgramMenuDir" Name="Article Compiler" Advertise="yes" Icon="StartMenuIcon.exe" IconIndex="0" />
+                        </File>
+                        <File Id="ControlzEx.dll" Name="ControlzEx.dll" Source="..\Deploy\release\ControlzEx.dll" />
+                        <File Id="GALASOFT.MVVMLIGHT.DLL" Name="GalaSoft.MvvmLight.dll" Source="..\Deploy\Release\GalaSoft.MvvmLight.dll" />
+                        <File Id="GALASOFT.MVVMLIGHT.EXTRAS.DLL" Name="GalaSoft.MvvmLight.Extras.dll" Source="..\Deploy\Release\GalaSoft.MvvmLight.Extras.dll" />
+                        <File Id="GALASOFT.MVVMLIGHT.PLATFORM.DLL" Name="GalaSoft.MvvmLight.Platform.dll" Source="..\Deploy\Release\GalaSoft.MvvmLight.Platform.dll" />
+                        <File Id="MAHAPPS.METRO.DLL" Name="MahApps.Metro.dll" Source="..\Deploy\Release\MahApps.Metro.dll" />
+                        <File Id="MICROSOFT.PRACTICES.PRISM.PUBSUBEVENTS.DLL" Name="Microsoft.Practices.Prism.PubSubEvents.dll" Source="..\Deploy\Release\Microsoft.Practices.Prism.PubSubEvents.dll" />
+                        <File Id="MICROSOFT.PRACTICES.SERVICELOCATION.DLL" Name="Microsoft.Practices.ServiceLocation.dll" Source="..\Deploy\Release\Microsoft.Practices.ServiceLocation.dll" />
+                        <File Id="PRISM.DLL" Name="Prism.dll" Source="..\Deploy\Release\Prism.dll" />
+                        <File Id="PRISM.WPF.DLL" Name="Prism.Wpf.dll" Source="..\Deploy\Release\Prism.Wpf.dll" />
+                        <File Id="PRISMMVVMLIBRARY.DLL" Name="PrismMVVMLibrary.dll" Source="..\Deploy\Release\PrismMVVMLibrary.dll" />
+                        <File Id="SYSTEM.WINDOWS.INTERACTIVITY.DLL" Name="System.Windows.Interactivity.dll" Source="..\Deploy\Release\System.Windows.Interactivity.dll" />
+                        <File Id="DOCUMENTARCHIVER.EXE.CONFIG" Name="DocumentArchiver.exe.config" Source="..\Deploy\Release\DocumentArchiver.exe.config" />
+                        <File Id="MahApps.Metro.SimpleChildWindow.dll" Name="MahApps.Metro.SimpleChildWindow.dll" Source="..\Deploy\release\MahApps.Metro.SimpleChildWindow.dll" />
+                        <File Id="ArticleCompilerUserManual.pdf" Name="ArticleCompilerUserManual.pdf" Source="..\Deploy\release\Article Compiler User Manual.pdf" />
+                    </Component>
+                    <Directory Id="IMAGES" Name="Images">
+                        <Component Id="IMAGEFILES" DiskId="1" Guid="CF0B8D1B-DCB6-403A-AA15-E5D9027DA670">
+                            <File Id="COLUMN.GIF" Name="Column.gif" Source="..\Deploy\Release\Images\Column.gif" />
+                            <File Id="DISKDRIVE.PNG" Name="diskdrive.png" Source="..\Deploy\Release\Images\diskdrive.png" />
+                            <File Id="FOLDER.PNG" Name="folder.png" Source="..\Deploy\Release\Images\folder.png" />
+                            <File Id="INDEX.GIF" Name="Index.gif" Source="..\Deploy\Release\Images\Index.gif" />
+                            <File Id="PARAMETER.GIF" Name="Parameter.gif" Source="..\Deploy\Release\Images\Parameter.gif" />
+                            <File Id="PKCOLUMN.GIF" Name="PKColumn.gif" Source="..\Deploy\Release\Images\PKColumn.gif" />
+                            <File Id="PROCEDURE.GIF" Name="Procedure.gif" Source="..\Deploy\Release\Images\Procedure.gif" />
+                            <File Id="PROCEDURES.GIF" Name="Procedures.gif" Source="..\Deploy\Release\Images\Procedures.gif" />
+                            <File Id="TABLE.GIF" Name="Table.gif" Source="..\Deploy\Release\Images\Table.gif" />
+                            <File Id="TABLES.GIF" Name="Tables.gif" Source="..\Deploy\Release\Images\Tables.gif" />
+                            <File Id="TREENODEDOT.GIF" Name="treenodedot.gif" Source="..\Deploy\Release\Images\treenodedot.gif" />
+                            <File Id="TREENODEMINUS.GIF" Name="treenodeminus.gif" Source="..\Deploy\Release\Images\treenodeminus.gif" />
+                            <File Id="TREENODEPLUS.GIF" Name="treenodeplus.gif" Source="..\Deploy\Release\Images\treenodeplus.gif" />
+                            <File Id="VIEW.GIF" Name="View.gif" Source="..\Deploy\Release\Images\View.gif" />
+                            <File Id="VIEWS.GIF" Name="Views.gif" Source="..\Deploy\Release\Images\Views.gif" />
+                            <File Id="Doc.ico" Name="Doc.ico" Source="..\Deploy\Release\Images\Doc.ico" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="RESOURCES" Name="Resources">
+                        <Component Id="RESOURCEFILES" DiskId="1" Guid="091CC1C4-A2AF-462A-A71B-A7E1469E3E65">
+                            <File Id="MSDN.CSS" Name="MSDN.css" Source="..\Deploy\Release\Resources\MSDN.css" />
+                            <File Id="TREE.CSS" Name="tree.css" Source="..\Deploy\Release\Resources\tree.css" />
+                            <File Id="TREE.JS" Name="tree.js" Source="..\Deploy\Release\Resources\tree.js" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="Output" Name="Output">
+                        <Component Id="OUTPUTFILES" DiskId="1" Guid="BDB851BC-FBA6-4A7A-ABDE-E191B381DF45">
+                            <File Id="Readme.txt" Name="Readme.txt" Source="..\Deploy\Release\Output\Readme.txt" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id="DesktopFolder" />
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ProgramMenuDir" Name="Article Compiler">
+                    <Component Id="StartMenuShortcuts" Guid="E9B511D7-7663-45AC-9387-B33AA9191875">
+                        <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+                        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" />
+                        <Shortcut Id="UninstallProduct" Name="Uninstall" Description="Uninstalls the application" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
+                    </Component>
+                </Directory>
+            </Directory>
+        </Directory>
+        <Feature Id="ProductFeature" Title="Installing Article Compiler" Level="1">
+            <ComponentRef Id="MainExecutable" />
+            <ComponentRef Id="RESOURCEFILES" />
+            <ComponentRef Id="IMAGEFILES" />
+            <ComponentRef Id="OUTPUTFILES" />
+            <ComponentRef Id="StartMenuShortcuts" />
+        </Feature>
+        <Icon Id="ArticleCompilerIcon" SourceFile="Doc.ico" />
+        <InstallExecuteSequence />
+        <Icon Id="DesktopIcon.exe" SourceFile="..\Deploy\Release\DocumentArchiver.exe" />
+        <Icon Id="StartMenuIcon.exe" SourceFile="..\Deploy\Release\DocumentArchiver.exe" />
+        <UIRef Id="WixUI_Mondo" />
+        <UI />
+    </Product>
+</Wix>

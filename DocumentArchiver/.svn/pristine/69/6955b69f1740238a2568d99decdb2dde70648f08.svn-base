@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using DocumentArchiver.Services;
+using DocumentArchiver.Helpers;
+
+namespace DocumentArchiver.Pages
+{
+    public class CreateArticlePageDetails : BasePage
+    {
+        private DocumentSettings documentSettings;
+
+        public void WriteHTML(DocumentSettings _documentSettings, string oName, string fullPath)
+        {
+            documentSettings = _documentSettings;
+            Encoding cp1252 = Encoding.GetEncoding(1252);
+            StreamWriter streamWriter = new StreamWriter(fs, cp1252);
+            string fileToRead = Path.Combine(documentSettings.InputFolder, oName);
+            StreamReader sr = new StreamReader(fileToRead, cp1252);
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                streamWriter.WriteLine(line);
+            }
+            sr.Close();
+            streamWriter.Close();
+        }
+    }
+}

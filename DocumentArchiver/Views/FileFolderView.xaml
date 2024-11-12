@@ -1,0 +1,58 @@
+﻿<UserControl
+    x:Class="DocumentArchiver.Views.FileFolderView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cnv="clr-namespace:DocumentArchiver.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DocumentArchiver.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    DataContext="{Binding FileFolderView, Source={StaticResource Locator}}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <cnv:FirstLetterConverter x:Key="firstLetterConverter" />
+            <CollectionViewSource x:Key="cvs" Source="{Binding Files, Mode=OneWay, NotifyOnSourceUpdated=True}">
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription Converter="{StaticResource firstLetterConverter}" PropertyName="Name" />
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
+            <DataTemplate x:Key="GroupingHeader">
+                <StackPanel>
+                    <TextBlock
+                        Margin="6,2"
+                        Background="Black"
+                        Foreground="White"
+                        Text="{Binding Path=Name}" />
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <GroupBox
+        x:Name="FilesGroupBox"
+        Width="Auto"
+        Height="Auto"
+        MinWidth="300"
+        Header="FILES">
+        <ListView
+            x:Name="FilesListView"
+            Width="Auto"
+            MinWidth="200"
+            ItemsSource="{Binding Source={StaticResource cvs}}">
+            <ListView.GroupStyle>
+                <GroupStyle HeaderTemplate="{StaticResource ResourceKey=GroupingHeader}" />
+            </ListView.GroupStyle>
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn
+                            Width="500"
+                            DisplayMemberBinding="{Binding Name}"
+                            Header="Filename" />
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </GroupBox>
+</UserControl>

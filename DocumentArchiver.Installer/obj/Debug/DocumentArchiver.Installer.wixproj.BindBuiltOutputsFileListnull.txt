@@ -1,0 +1,2 @@
+C:\Projects\DocumentArchiver4\DocumentArchiver.Installer\bin\Debug\DocumentArchiver.Installer.msi
+C:\Projects\DocumentArchiver4\DocumentArchiver.Installer\bin\Debug\DocumentArchiver.Installer.wixpdb

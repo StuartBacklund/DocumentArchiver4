@@ -1,0 +1,82 @@
+﻿<controls:MetroWindow xmlns:Views="clr-namespace:DocumentArchiver.Views"
+     x:Class="DocumentArchiver.MainWindow"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+     xmlns:local="clr-namespace:DocumentArchiver"
+     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     Width="1000"
+     Height="600"
+     IgnoreTaskbarOnMaximize="False"
+     ShowIconOnTitleBar="True"
+     ShowTitleBar="True"
+     Title="{Binding WindowTitle}"
+                      Loaded="OnWindowLoaded"
+     WindowStartupLocation="CenterScreen"
+     WindowState="Normal"
+     DataContext="{Binding MainView,                                             Source={StaticResource Locator}}"
+     mc:Ignorable="d">
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button
+                    Click="ShowSettings"
+                    Content="SETTINGS"
+                    ToolTip="Customize the application look and feel" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout
+                    x:Name="settingsFlyout"
+                    Header="SETTINGS"
+                    Position="Right">
+                <DockPanel
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Separator
+                                   Grid.Row="0"
+                                   Margin="0,10,0,10" />
+                        <Views:SettingsViewControl
+                                   x:Name="SettingsView"
+                                   Grid.Row="1" />
+                    </Grid>
+                </DockPanel>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3">
+            <Views:NavigationView />
+        </StackPanel>
+        <ContentControl Grid.Row="1" Grid.RowSpan="2" Grid.Column="0">
+            <Views:DirectoryView />
+        </ContentControl>
+        <ContentControl Grid.Row="1" Grid.RowSpan="2"  Grid.Column="1">
+            <Views:FileFolderView />
+        </ContentControl>
+        <ContentControl Grid.Row="1" Grid.Column="2">
+            <Views:MessageView />
+        </ContentControl>
+        <ContentControl Grid.Row="2" Grid.Column="2">
+            <Views:PropertyGridView />
+        </ContentControl>
+    </Grid>
+</controls:MetroWindow>

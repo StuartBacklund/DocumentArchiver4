@@ -1,0 +1,108 @@
+﻿<UserControl
+    x:Class="DocumentArchiver.Views.PropertyGridView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DocumentArchiver.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    HorizontalAlignment="Stretch"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    DataContext="{Binding PropertyGridView, Source={StaticResource Locator}, NotifyOnValidationError=True}"
+    mc:Ignorable="d">
+    <GroupBox
+        x:Name="SettingsGroupBox"
+        Width="Auto"
+        Height="Auto"
+        MinWidth="300"
+        HorizontalContentAlignment="Left"
+        Header="SETTINGS">
+
+        <Grid
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            DataContext="{Binding DocumentSettings, UpdateSourceTrigger=PropertyChanged}">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Width="150"
+                Height="30"
+                Content="PROJECT NAME" />
+            <TextBox
+                x:Name="txtProjname"
+                Grid.Row="0"
+                Grid.Column="1"
+                Width="200"
+                Height="30"
+                Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                Validation.Error="Validation_Error" />
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
+                Width="150"
+                Height="30"
+                Content="DOCUMENT NAME" />
+            <TextBox
+                x:Name="txtDocName"
+                Grid.Row="1"
+                Grid.Column="1"
+                Width="200"
+                Height="30"
+                Text="{Binding DocumentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                Validation.Error="Validation_Error" />
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Width="150"
+                Height="30"
+                Content="WORKING FOLDER" />
+            <TextBlock
+                x:Name="txtWorkingFolder"
+                Grid.Row="2"
+                Grid.Column="1"
+                Width="200"
+                Height="30"
+                Text="{Binding InputFolder}"
+                TextWrapping="WrapWithOverflow" />
+            <Label
+                Grid.Row="3"
+                Grid.Column="0"
+                Width="150"
+                Height="30"
+                Content="DATE MODIFIED" />
+            <TextBlock
+                x:Name="txtDate"
+                Grid.Row="3"
+                Grid.Column="1"
+                Width="200"
+                Height="30"
+                Text="{Binding ModifiedDate}" />
+            <Label
+                Grid.Row="4"
+                Grid.Column="0"
+                Width="150"
+                Height="30"
+                Content="ITEM COUNT" />
+            <TextBlock
+                x:Name="txtCount"
+                Grid.Row="4"
+                Grid.Column="1"
+                Width="200"
+                Height="30"
+                Text="{Binding NumberOfArticles}" />
+        </Grid>
+    </GroupBox>
+</UserControl>

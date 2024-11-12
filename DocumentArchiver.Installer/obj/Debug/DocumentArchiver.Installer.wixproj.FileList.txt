@@ -1,0 +1,6 @@
+C:\Projects\DocumentArchiver4\DocumentArchiver.Installer\bin\Debug\DocumentArchiver.Installer.msi
+C:\Projects\DocumentArchiver4\DocumentArchiver.Installer\bin\Debug\DocumentArchiver.Installer.wixpdb
+obj\Debug\Product.wixobj
+obj\Debug\DocumentArchiver.Installer.wixproj.BindContentsFileListnull.txt
+obj\Debug\DocumentArchiver.Installer.wixproj.BindOutputsFileListnull.txt
+obj\Debug\DocumentArchiver.Installer.wixproj.BindBuiltOutputsFileListnull.txt

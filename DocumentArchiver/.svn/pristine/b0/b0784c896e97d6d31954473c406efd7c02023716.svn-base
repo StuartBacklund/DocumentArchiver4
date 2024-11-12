@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="DocumentArchiver.Views.PropertyGridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DocumentArchiver.Views"
+             mc:Ignorable="d"
+            DataContext="{Binding PropertyGridView,                                             Source={StaticResource Locator}}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <GroupBox x:Name="SettingsGroupBox"
+                          Height="Auto"
+                          Width="Auto"
+                         MinWidth="300" Header="SETTINGS">
+        <UniformGrid Columns="2" VerticalAlignment="Top" DataContext="{Binding DocumentSettings,UpdateSourceTrigger=PropertyChanged}">
+            <Label Content="PROJECT NAME"  Height="30"></Label>
+            <TextBlock x:Name="txtProjname"  Height="30"  Text="{Binding ProjectName}" />
+            <Label Content="DOCUMENT NAME" Width="150"  Height="30"></Label>
+            <TextBlock x:Name="txtDocName"  Width="150"  Height="30" Text="{Binding DocumentName}" />
+            <Label Content="WORKING FOLDER"  Height="30"></Label>
+            <TextBlock x:Name="txtWorkingFolder" Height="30"  Text="{Binding InputFolder}" />
+            <Label Content="OUTPUT PATH"  Height="30"></Label>
+            <TextBlock x:Name="txtOutputPath"  Height="30"  Text="{Binding OutputFolder}" />
+            <Label Content="ITEM COUNT"  Height="30"></Label>
+            <TextBlock x:Name="txtCount"  Height="30"  Text="{Binding NumberOfArticles}" />
+            <Label Content="DATE MODIFIED"  Height="30"></Label>
+            <TextBlock x:Name="txtDate"  Height="30"  Text="{Binding ModifiedDate}" />
+        </UniformGrid>
+    </GroupBox>
+</UserControl>

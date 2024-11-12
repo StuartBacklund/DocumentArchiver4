@@ -1,0 +1,69 @@
+﻿using System.IO;
+using System.Threading.Tasks;
+using DocumentArchiver.Commands;
+using DocumentArchiver.Services;
+using GalaSoft.MvvmLight;
+using Microsoft.Practices.Prism.PubSubEvents;
+
+namespace DocumentArchiver.ViewModel
+{
+    public class PropertyGridViewModel : ViewModelBase
+    {
+        private IEventAggregator eventAggregator;
+        private string selectedImagePath;
+        private DocumentSettings documentSettings;
+
+        public string SelectedImagePath
+        {
+            get
+            {
+                return selectedImagePath;
+            }
+
+            set
+            {
+                selectedImagePath = value;
+            }
+        }
+
+        public DocumentSettings DocumentSettings
+        {
+            get
+            {
+                return documentSettings;
+            }
+            set
+            {
+                documentSettings = value;
+                RaisePropertyChanged(() => DocumentSettings);
+            }
+        }
+
+        public PropertyGridViewModel(IEventAggregator eventAggregator)
+        {
+            this.eventAggregator = eventAggregator;
+            this.documentSettings = App.Current.FindResource("objDocumentSettings") as DocumentSettings;
+            eventAggregator.GetEvent<ListDirectoryContentsEvent>().Subscribe(ListDirectoryContents);
+            eventAggregator.GetEvent<CompileDocumentEvent>().Subscribe(CompileAsync);
+        }
+
+        private void ListDirectoryContents(string workingDirectory)
+        {
+            var path = new DirectoryInfo(workingDirectory);
+            documentSettings.InputFolder = path.ToString();
+            RaisePropertyChanged(() => DocumentSettings);
+        }
+
+        private async void CompileAsync(string obj)
+        {
+            await CompileDocument(this.documentSettings);
+        }
+
+        public async Task<int> CompileDocument(DocumentSettings settings)
+        {
+            ArticleCompiler articleCompiler = new ArticleCompiler(settings);
+            ArticleCompilerWrapper wrapper = new ArticleCompilerWrapper(articleCompiler);
+            return await Task.Run(() => wrapper.Run());
+        }
+    }
+}

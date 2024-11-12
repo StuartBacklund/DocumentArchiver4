@@ -1,0 +1,81 @@
+﻿using System.IO;
+using System.Windows.Input;
+using DocumentArchiver.Commands;
+using DocumentArchiver.Services;
+using GalaSoft.MvvmLight;
+using Microsoft.Practices.Prism.PubSubEvents;
+using Prism.Commands;
+
+namespace DocumentArchiver.ViewModel
+{
+    public class NavigationViewModel : ViewModelBase
+    {
+        public FileInfo[] files;
+        private IEventAggregator eventAggregator;
+        private string selectedImagePath;
+        private IDocumentSettings documentSettings;
+
+        public string SelectedImagePath
+        {
+            get
+            {
+                return selectedImagePath;
+            }
+
+            set
+            {
+                selectedImagePath = value;
+                RaisePropertyChanged(() => SelectedImagePath);
+            }
+        }
+
+        private string navDocumentName;
+
+        public string NavDocumentName
+        {
+            get { return navDocumentName; }
+            set
+            {
+                navDocumentName = value;
+                this.documentSettings.DocumentName = value;
+                RaisePropertyChanged(() => NavDocumentName);
+            }
+        }
+
+        public IDocumentSettings DocumentSettings
+        {
+            get
+            {
+                return documentSettings;
+            }
+            set
+            {
+                documentSettings = value;
+                RaisePropertyChanged(() => DocumentSettings);
+            }
+        }
+
+        public ICommand CompileCommand
+        {
+            get
+            {
+                return new DelegateCommand<object>(this.Compile);
+            }
+        }
+
+        private void Compile(object obj)
+        {
+            eventAggregator.GetEvent<CompileDocumentEvent>().Publish("");
+        }
+
+        public NavigationViewModel(IEventAggregator eventAggregator)
+        {
+            this.eventAggregator = eventAggregator;
+            this.documentSettings = App.Current.FindResource("objDocumentSettings") as DocumentSettings;
+        }
+
+        private void ListDirectoryContents(DirectoryInfo workingDirectory)
+        {
+        }
+    }
+}

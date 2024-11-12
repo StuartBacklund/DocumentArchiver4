@@ -1,0 +1,73 @@
+using DocumentArchiver.Services;
+using GalaSoft.MvvmLight;
+using Microsoft.Practices.Prism.PubSubEvents;
+
+namespace DocumentArchiver.ViewModel
+{
+    public class MainViewModel : ViewModelBase
+    {
+        private IEventAggregator eventAggregator;
+        private string projectName;
+        private IDocumentSettings documentSettings;
+
+        public string ProjectName
+        {
+            get { return projectName; }
+            set { projectName = value; }
+        }
+
+        private string pageName;
+
+        public string PageName
+        {
+            get { return pageName; }
+            set { pageName = value; }
+        }
+
+        private string outputFolder;
+
+        public string OutputFolder
+        {
+            get { return outputFolder; }
+            set { outputFolder = value; }
+        }
+
+        private string modifiedDate;
+
+        public string ModifiedDate
+        {
+            get { return modifiedDate; }
+            set { modifiedDate = value; }
+        }
+
+        private string numberOfArticles;
+
+        public string NumberOfArticles
+        {
+            get { return numberOfArticles; }
+            set { numberOfArticles = value; }
+        }
+
+        private string inputFolder;
+
+        public string InputFolder
+        {
+            get { return inputFolder; }
+            set { inputFolder = value; }
+        }
+
+        private string documentName;
+
+        public string DocumentName
+        {
+            get { return documentName; }
+            set { documentName = value; }
+        }
+
+        public MainViewModel(IEventAggregator eventAggregator)
+        {
+            this.eventAggregator = eventAggregator;
+            this.documentSettings = App.Current.FindResource("objDocumentSettings") as DocumentSettings;
+        }
+    }
+}
